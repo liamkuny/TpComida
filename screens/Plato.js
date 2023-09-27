@@ -71,7 +71,7 @@ export default function plato({data, isMenu, setMenu, menu, setModal}) {
           }
           aux.push(newPlato);
           setMenu([...aux]);
-          }} disabled={platoOff} colorScheme={colorScheme}>Añadir Plato</Button>
+          }} disabled={platoOff} color={'danger'}>Añadir Plato</Button>
       }
       </Center>
   );

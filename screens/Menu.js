@@ -26,7 +26,7 @@ export default function menu({ props }) {
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 24, color: "#000" }} >Menu:</Text>
       <Text>Acumulativo precio: {acumulativoPrecio}</Text>
-      <Text>Salud promedio: {props.menu.length ? acumulativoSalud / props.menu.length : '0'}</Text>
+      <Text>Salud promedio: {props.menu.length ? acumulativoSalud / props.menu.length : '0'}</Text> 
       <Text>Platos veganos: {vegan} {vegan == 2 ? '[Maximo de platos]' : ''}</Text>
       <Text>Platos no veganos: {notVegan} {notVegan == 2 ? '[Maximo de platos]' : ''}</Text>
       <FlatList
