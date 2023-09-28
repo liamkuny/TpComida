@@ -1,24 +1,51 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { Text, View, Button, Alert } from 'react-native';
 import axios from 'axios';
 import { Input, Stack } from 'native-base';
+import { ActionTypes, useContextState } from "../contextState.js";
 
-export default function login({ props }) {
+export default function Login({ props }) {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
-  const [invalid, setInvalid] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+
+  const { contextState, setContextState } = useContextState();
 
   async function handleSubmit(email, password) {
+    if (!email || !password) {
+      // Muestra un mensaje de error si los campos están vacíos.
+      Alert.alert('Error', 'Por favor, complete todos los campos.');
+      return;
+    }
+
     try {
-      await axios.post('http://challenge-react.alkemy.org/', {
+      setLoading(true);
+
+      // Realiza la solicitud POST al servidor.
+      const response = await axios.post('http://challenge-react.alkemy.org/', {
         email: email,
         password: password,
       });
-      return true;
+
+      setLoading(false);
+
+      if (response.data && response.data.token) {
+       
+        setContextState({ newValue: response.data.token, type: ActionTypes.setUserToken });
+
+       
+        props.setAuth(true);
+      } else {
+        props.setAuth(false);
+        setError('Error, Credenciales inválidas')
+        Alert.alert('Error', 'Credenciales inválidas');
+      }
     } catch (error) {
-      setError('¡El Email o la Contraseña son incorrectos!');
-      return false;
+      setLoading(false);
+      
+      Alert.alert('Error', 'Se produjo un error al iniciar sesión. Por favor, inténtalo de nuevo más tarde.');
     }
   }
 
@@ -26,29 +53,21 @@ export default function login({ props }) {
     <View style={styles.container}>
       <Stack space={4} w="75%" maxW="300px" mx="auto">
         <Text fontWeight="bold">¡Bienvenidos! Ingrese sus datos para Iniciar Sesion.</Text>
-        <Input variant="filled" placeholder="Email" onChangeText={setEmail} />
-        <Input variant="filled" placeholder="Contraseña" onChangeText={setPass} secureTextEntry={true} />
+        <Input variant="filled" placeholder="Email" name="mail" onChangeText={setEmail} />
+        <Input variant="filled" placeholder="Contraseña" name="contraseña" onChangeText={setPass} secureTextEntry={true} />
       </Stack>
       <Button
         title="Ingresar"
         onPress={async () => {
-          if (!email || !pass) {
-            setInvalid(true);
-          } else {
-            const res = await handleSubmit(email, pass);
-            props.setAuth(res);
-            if (!res) {
-              setInvalid(true);
-            }
-          }
+          handleSubmit(email, pass);
         }}
+        disabled={loading} // Desactiva el botón mientras se está procesando la solicitud.
       />
-      {invalid ? <Text style={{ color: 'red' }}>{error}</Text> : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     marginVertical: 300,
@@ -56,4 +75,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontWeight: 'bold',
   },
-});
+};

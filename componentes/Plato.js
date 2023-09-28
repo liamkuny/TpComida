@@ -9,7 +9,7 @@ async function AgregarPlato(id) {
   return await axios.get(`https://api.spoonacular.com/recipes/${id}/information`, { 
     params: {
       apiKey: API_KEY
-    }
+    }    
   })  
   .then(function (response) {
     return response.data;

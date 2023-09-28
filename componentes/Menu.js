@@ -6,6 +6,7 @@ import Plato from './Plato.js';
 
 export default function menu({ props }) {
   const [modalData, setModal] = useState(false);
+  
 
   let acumulativoPrecio = 0;
   let acumulativoSalud = 0;
