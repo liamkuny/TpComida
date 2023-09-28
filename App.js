@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import {View} from 'react-native';
-import Login from './screens/Login.js';
-import Menu from './screens/menu.js';
-import Buscador from './screens/buscador.js';
+import Login from './componentes/Login.js';
+import Menu from './componentes/menu.js';
+import Buscador from './componentes/buscador.js';
 import { ContextProvider } from "./contextState";
 import { Center, NativeBaseProvider } from 'native-base';
 import { ImageBackground } from 'react-native-web';
@@ -13,7 +13,7 @@ export default function App() {
 
   return (
     <NativeBaseProvider>
-      <ImageBackground  style={{width: '100%', height: '100%'}} source={{uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNelZTFlQlN25LqT_d1o3RYA2xjM3xr2lL6w&usqp=CAU"}} resizeMode="cover">
+      <ImageBackground  style={{width: '100%', height: '100%'}} source={{uri: "https://img.freepik.com/vector-gratis/fondo-comida-rapida-dibujado-mano_23-2149013389.jpg?w=2000"}} resizeMode="cover">
         <Center>
         <ContextProvider>
           {auth ?
