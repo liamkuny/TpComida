@@ -1,5 +1,4 @@
 
-//cambiar variables
 import React, { useContext } from "react";
 
 export const initialState = {
