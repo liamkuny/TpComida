@@ -13,7 +13,7 @@ export default function Login() {
   
   async function handleSubmit(email, password) {
     if (!email || !password) {
-      alert('Error', 'Por favor, complete todos los campos.');
+      alert('Error: Por favor, complete todos los campos.');
       return;
     }
 
@@ -26,18 +26,12 @@ export default function Login() {
       });
 
       setLoading(false);
-
-      if (response.data && response.data.token) {
-       
         context.setAuth(response.data.token);
-      } else {
-        context.setAuth("");
-        alert('Error', 'Credenciales inválidas');
-      }
+      
     } catch (error) {
       setLoading(false);
       
-      alert('Error', 'Se produjo un error al iniciar sesión. Por favor, inténtalo de nuevo más tarde.');
+      alert('Error: Creedenciales invalidas');
     }
   }
 
