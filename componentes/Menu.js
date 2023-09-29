@@ -1,37 +1,40 @@
-import { Checkbox, VStack } from 'native-base';
-import React, { useState, useEffect, useContext } from 'react';
+
+import React, { useState} from 'react';
 import { SafeAreaView, FlatList, Text, Modal, StyleSheet, View, Pressable, Image } from 'react-native';
 
 import Plato from './Plato.js';
+import { useContext } from 'react';
+import { ComidasContext } from '../contextState.js';
 
-export default function menu({ props }) {
+export default function menu() {
   const [modalData, setModal] = useState(false);
   
+  const context = useContext(ComidasContext);
 
   let acumulativoPrecio = 0;
   let acumulativoSalud = 0;
-  props.menu.forEach(element => {
+  context.menu.forEach(element => {
     acumulativoPrecio += element.pricePerServing;
     acumulativoSalud += element.healthScore;
   });
 
   const renderItem = ({ item }) => (
-    <Plato data={item} isMenu={true} setMenu={props.setMenu} menu={props.menu} modal={modalData} setModal={setModal} />
+    <Plato data={item} isMenu={true} modal={modalData} setModal={setModal} />
   );
   let vegan = 0;
   let notVegan = 0;
-  props.menu.forEach(element => {
+  context.menu.forEach(element => {
     element.vegan ? vegan++ : notVegan++;
   });
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 24, color: "#000" }} >Menu:</Text>
       <Text>Acumulativo precio: {acumulativoPrecio}</Text>
-      <Text>Salud promedio: {props.menu.length ? acumulativoSalud / props.menu.length : '0'}</Text> 
+      <Text>Salud promedio: {context.menu.length ? acumulativoSalud / context.menu.length : '0'}</Text> 
       <Text>Platos veganos: {vegan} {vegan == 2 ? '[Maximo de platos]' : ''}</Text>
       <Text>Platos no veganos: {notVegan} {notVegan == 2 ? '[Maximo de platos]' : ''}</Text>
       <FlatList
-        data={props.menu}
+        data={context.menu}
         renderItem={renderItem}
         keyExtractor={item => item.title}
       />

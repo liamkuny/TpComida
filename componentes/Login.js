@@ -1,29 +1,25 @@
-import React, { useState } from 'react';
-import { Text, View, Button, Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Text, View, Button} from 'react-native';
 import axios from 'axios';
 import { Input, Stack } from 'native-base';
-import { ActionTypes, useContextState } from "../contextState.js";
+import { ComidasContext } from "../contextState.js";
 
-export default function Login({ props }) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   
-
-  const { contextState, setContextState } = useContextState();
-
+  const context = useContext(ComidasContext);
+  
   async function handleSubmit(email, password) {
     if (!email || !password) {
-      // Muestra un mensaje de error si los campos están vacíos.
-      Alert.alert('Error', 'Por favor, complete todos los campos.');
+      alert('Error', 'Por favor, complete todos los campos.');
       return;
     }
 
     try {
       setLoading(true);
 
-      // Realiza la solicitud POST al servidor.
       const response = await axios.post('http://challenge-react.alkemy.org/', {
         email: email,
         password: password,
@@ -33,19 +29,15 @@ export default function Login({ props }) {
 
       if (response.data && response.data.token) {
        
-        setContextState({ newValue: response.data.token, type: ActionTypes.setUserToken });
-
-       
-        props.setAuth(true);
+        context.setAuth(response.data.token);
       } else {
-        props.setAuth(false);
-        setError('Error, Credenciales inválidas')
-        Alert.alert('Error', 'Credenciales inválidas');
+        context.setAuth("");
+        alert('Error', 'Credenciales inválidas');
       }
     } catch (error) {
       setLoading(false);
       
-      Alert.alert('Error', 'Se produjo un error al iniciar sesión. Por favor, inténtalo de nuevo más tarde.');
+      alert('Error', 'Se produjo un error al iniciar sesión. Por favor, inténtalo de nuevo más tarde.');
     }
   }
 
@@ -61,7 +53,7 @@ export default function Login({ props }) {
         onPress={async () => {
           handleSubmit(email, pass);
         }}
-        disabled={loading} // Desactiva el botón mientras se está procesando la solicitud.
+        disabled={loading} 
       />
     </View>
   );

@@ -1,7 +1,8 @@
 import React, {useContext} from 'react';
-import {Text, StyleSheet} from 'react-native';
+import {Text} from 'react-native';
 import axios from "axios";
 import { Badge, Button, Center, HStack } from 'native-base';
+import { ComidasContext } from '../contextState';
 
 const API_KEY = "1fcffc9826e745be90f1f569128f1a5c";
 
@@ -19,12 +20,14 @@ async function AgregarPlato(id) {
   });
 }
 
-export default function plato({data, isMenu, setMenu, menu, setModal}) {
+export default function plato({data, isMenu, setModal}) {
   let platoOff = false;
   let colorScheme = "coolGray";
 
-  platoOff = menu.some(plato => {
-    return plato.title === data.title || menu.length == 4
+  const context = useContext(ComidasContext);
+
+  platoOff = context.menu.some(plato => {
+    return plato.title === data.title || context.menu.length == 4
   })
   if(platoOff) {
     colorScheme = "success"
@@ -44,8 +47,7 @@ export default function plato({data, isMenu, setMenu, menu, setModal}) {
         <>
         <HStack space={2} justifyContent="center">
           <Button colorScheme="danger" onPress={() => {
-            menu = menu.filter(item => item.title != data.title)
-            setMenu(menu)
+            context.setMenu(context.menu.filter(item => item.title != data.title));
           }}>
             <Text style={{color:'white'}}>Eliminar</Text>
           </Button>
@@ -59,18 +61,16 @@ export default function plato({data, isMenu, setMenu, menu, setModal}) {
         </>
         :
         <Button onPress={async () => {
-          let aux = menu;
           let newPlato = await AgregarPlato(data.id);
           let vegan = 0;
           let notVegan = 0;
-          aux.forEach(element => {
+          context.menu.forEach(element => {
             element.vegan ? vegan++ : notVegan++;
           });
           if (newPlato.vegan && vegan == 2 || !newPlato.vegan && notVegan == 2) {
             return null;
           }
-          aux.push(newPlato);
-          setMenu([...aux]);
+          context.setMenu([...context.menu, newPlato]);
           }} disabled={platoOff} color={'danger'}>Añadir Plato</Button>
       }
       </Center>
